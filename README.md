@@ -5,8 +5,8 @@
 ## Développement local
 
 ```bash
-git clone git@github.com:RedTheFoxx/StarLoco.git
-cd StarLoco
+git clone git@github.com:RedTheFoxx/StarLoco-Emu.git
+cd StarLoco-Emu
 
 # Compiler depuis les sources, builder les images, démarrer la stack
 ./scripts/setup.sh
