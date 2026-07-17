@@ -1,0 +1,16 @@
+# Artefacts de build Gradle
+**/build/
+**/.gradle/
+
+# Temporaires
+.tmp-*/
+**/*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Docker / web générés
+docker/web/
+docker/.tmp-starloco-web/
