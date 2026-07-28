@@ -916,6 +916,11 @@ public class GameClient {
                 if (this.player.getGroup() == null)
                     return;
                 msg = packet.split("\\|", 2)[1];
+                // Les commandes .a / .gm doivent aussi marcher sur le canal staff
+                if (CommandPlayer.analyse(this.player, msg)) {
+                    this.player.send("BN");
+                    return;
+                }
                 if (Logging.USE_LOG)
                     Logging.getInstance().write("AdminMessage", this.player.getName()
                             + " > " + msg);

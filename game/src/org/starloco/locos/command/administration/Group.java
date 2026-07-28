@@ -41,7 +41,12 @@ public class Group {
 
     public boolean haveCommand(String name) {
         if(allCommands) return true;
-        return commands.contains(name);
+        for (String command : commands) {
+            if (command.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 //    public static void reload() {

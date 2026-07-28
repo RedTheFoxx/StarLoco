@@ -136,12 +136,16 @@ public final class DataScriptVM extends ScriptVM {
             boolean gIsPlayer = args.nextBoolean();
             Object gCommands = args.next();
 
-            if(gCommands instanceof Boolean) {
-                new Group(gId, gName, gIsPlayer, (Boolean)gCommands, Collections.emptyList());
-            } else if (gCommands instanceof Table){
+            if (gCommands instanceof Boolean) {
+                new Group(gId, gName, gIsPlayer, (Boolean) gCommands, Collections.emptyList());
+            } else if (gCommands instanceof Table) {
                 new Group(gId, gName, gIsPlayer, false, listOfString((Table) gCommands));
-            }else {
-                throw new IllegalArgumentException("RegisterAdminGroup with invalid commands param");
+            } else if (gCommands != null && ("true".equalsIgnoreCase(String.valueOf(gCommands))
+                    || "false".equalsIgnoreCase(String.valueOf(gCommands)))) {
+                // Certains bindings Lua renvoient le booléen sous forme de String
+                new Group(gId, gName, gIsPlayer, Boolean.parseBoolean(String.valueOf(gCommands)), Collections.emptyList());
+            } else {
+                throw new IllegalArgumentException("RegisterAdminGroup with invalid commands param: " + gCommands);
             }
 
             context.getReturnBuffer().setTo();

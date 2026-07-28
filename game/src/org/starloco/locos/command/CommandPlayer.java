@@ -26,10 +26,18 @@ public class CommandPlayer {
 
     public static boolean analyse(Player player, String msg) {
         msg = msg.replace("|", "");
+        if (msg.isEmpty()) {
+            return false;
+        }
         if (msg.charAt(0) == '.') {
-            // Pont GM pour clients Retro sans console Flash : .a HELP / .gm LEVEL 200
+            // Pont GM pour clients Retro sans console Flash : .a HELP / .gm LEVEL 200 / .aHELP
+            // Ne pas matcher les commandes joueur (.astrub, .auction, .all, ...)
             String lower = msg.toLowerCase();
-            if (lower.startsWith(".a ") || lower.startsWith(".gm ") || lower.equals(".a") || lower.equals(".gm")) {
+            boolean adminPrefix = lower.equals(".a") || lower.equals(".gm")
+                    || lower.startsWith(".a ") || lower.startsWith(".gm ")
+                    || (lower.startsWith(".a") && msg.length() > 2 && Character.isUpperCase(msg.charAt(2)))
+                    || (lower.startsWith(".gm") && msg.length() > 3 && Character.isUpperCase(msg.charAt(3)));
+            if (adminPrefix) {
                 return dispatchAdminChat(player, msg);
             }
             if(command(msg, "help")) {
@@ -135,10 +143,20 @@ public class CommandPlayer {
 
         String body = msg.substring(1).trim();
         String bodyLower = body.toLowerCase();
-        if (bodyLower.startsWith("a ") || bodyLower.equals("a")) {
-            body = bodyLower.equals("a") ? "" : body.substring(2).trim();
-        } else if (bodyLower.startsWith("gm ") || bodyLower.equals("gm")) {
-            body = bodyLower.equals("gm") ? "" : body.substring(3).trim();
+        if (bodyLower.equals("a") || bodyLower.equals("gm")) {
+            body = "";
+        } else if (bodyLower.startsWith("a ")) {
+            body = body.substring(2).trim();
+        } else if (bodyLower.startsWith("gm ")) {
+            body = body.substring(3).trim();
+        } else if (bodyLower.startsWith("a") && body.length() > 1 && !Character.isLetter(body.charAt(1))) {
+            // ".a HELP" déjà géré ; garde-fou pour variantes
+            body = body.substring(1).trim();
+        } else if (bodyLower.startsWith("a") && body.length() > 1) {
+            // ".aHELP" / ".aLEVEL 200"
+            body = body.substring(1).trim();
+        } else if (bodyLower.startsWith("gm") && body.length() > 2) {
+            body = body.substring(2).trim();
         }
 
         if (body.isEmpty()) {
